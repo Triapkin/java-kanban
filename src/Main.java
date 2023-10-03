@@ -1,6 +1,9 @@
+import test.TestBeforeLaunch;
+
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Поехали!");
+        TestBeforeLaunch testBeforeLaunch = new TestBeforeLaunch();
+        testBeforeLaunch.create_test();
     }
 }
