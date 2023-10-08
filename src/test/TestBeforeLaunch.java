@@ -1,14 +1,14 @@
 package test;
 
 import enums.Status;
-import manager.Manager;
+import manager.InMemoryTaskManager;
 import models.Epic;
 import models.Subtask;
 import models.Task;
 
 public class TestBeforeLaunch {
 
-    Manager manager = new Manager();
+    InMemoryTaskManager manager = new InMemoryTaskManager();
 
     public void create_test() {
         System.out.println("Создаем 2 задачи");
@@ -66,6 +66,11 @@ public class TestBeforeLaunch {
         System.out.println("Список эпиков после удаления:");
         manager.getALlEpics().forEach(e -> {
             System.out.println("ID: " + e.getId() + " | Название: " + e.getTitle() + " | Описание: " + e.getDescription() + " | Статус: " + e.getStatus().toString());
+        });
+
+        System.out.println("История просмотров: ");
+        manager.getHistory().forEach(h -> {
+            System.out.println("ID: " + h.getId() + " | Название: " + h.getTitle() + " | Описание: " + h.getDescription());
         });
     }
 
