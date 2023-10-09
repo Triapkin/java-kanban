@@ -1,9 +1,6 @@
 package test;
 
 import enums.Status;
-import implementation.InMemoryHistoryManager;
-import implementation.InMemoryTaskManager;
-import interfaces.HistoryManager;
 import interfaces.TaskManager;
 import manager.Managers;
 import models.Epic;
@@ -13,7 +10,6 @@ import models.Task;
 public class TestBeforeLaunch {
 
     TaskManager manager = Managers.getDefault();
-    HistoryManager historyManager = Managers.getDefaultHistory();
 
     public void create_test() {
         System.out.println("Создаем 2 задачи");
@@ -74,7 +70,7 @@ public class TestBeforeLaunch {
         });
 
         System.out.println("История просмотров: ");
-        historyManager.getHistory().forEach(h -> {
+        manager.getHistory().forEach(h -> {
             System.out.println("ID: " + h.getId() + " | Название: " + h.getTitle() + " | Описание: " + h.getDescription());
         });
     }

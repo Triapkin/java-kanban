@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface TaskManager {
 
-
     List<Task> getAllTasks();
 
     void deleteAllTasks();
@@ -48,4 +47,6 @@ public interface TaskManager {
     List<Subtask> getAllSubTasksByEpicId(int epicId);
 
     void updateEpicStatus(int epicId);
+
+    List<Task> getHistory();
 }
