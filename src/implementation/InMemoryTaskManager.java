@@ -1,6 +1,9 @@
-package manager;
+package implementation;
 
 import enums.Status;
+import interfaces.HistoryManager;
+import interfaces.TaskManager;
+import manager.Managers;
 import models.Epic;
 import models.Subtask;
 import models.Task;
@@ -14,14 +17,16 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Subtask> subtasks;
     private HashMap<Integer, Epic> epics;
 
-    private List<Task> history;
+    private HistoryManager historyManager;
+
+
     int taskId = 0;
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
         subtasks = new HashMap<>();
         epics = new HashMap<>();
-        history = new ArrayList<>();
+        historyManager = Managers.getDefaultHistory();
     }
 
     @Override
@@ -38,7 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Task getTaskById(int id) {
         Task task = tasks.get(id);
         if (task != null) {
-            addToHistory(task);
+            historyManager.addToHistory(task);
         }
         return tasks.get(id);
     }
@@ -79,7 +84,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic getEpicById(int id) {
         Epic epic = epics.get(id);
         if (epic != null) {
-            addToHistory(epic);
+            historyManager.addToHistory(epic);
         }
         return epics.get(id);
     }
@@ -117,7 +122,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Subtask> getAllSubTasks() {
+    public List<Subtask> getAllSubTasks() {
         return new ArrayList<>(subtasks.values());
     }
 
@@ -134,7 +139,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getSubTasksById(int id) {
         Subtask subtask = subtasks.get(id);
         if (subtask != null) {
-            addToHistory(subtask);
+            historyManager.addToHistory(subtask);
         }
         return subtasks.get(id);
     }
@@ -195,16 +200,5 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int createIdForTask() {
         return ++taskId;
-    }
-
-    private void addToHistory(Task task) {
-        history.add(task);
-        if (history.size() > 10) {
-            history.remove(0);
-        }
-    }
-
-    public List<Task> getHistory() {
-        return history;
     }
 }
