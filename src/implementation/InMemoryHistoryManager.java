@@ -2,29 +2,32 @@ package implementation;
 
 import interfaces.HistoryManager;
 import models.Task;
+import utils.CustomLinkedList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private List<Task> history;
-    private final int MAX_HISTORY_COUNTS = 10;
+    private CustomLinkedList history;
 
     public InMemoryHistoryManager() {
-        this.history = new ArrayList<>();
+        history = new CustomLinkedList();
     }
 
     @Override
-    public void addToHistory(Task task) {
-        history.add(task);
-        if (history.size() > MAX_HISTORY_COUNTS) {
-            history.remove(0);
+    public void add(Task task) {
+        if (!history.getTasks().contains(task)) {
+            history.linkLast(task);
         }
     }
 
     @Override
+    public void remove(int id) {
+        history.remove(id);
+    }
+
+    @Override
     public List<Task> getHistory() {
-        return List.copyOf(history);
+        return history.getTasks();
     }
 }

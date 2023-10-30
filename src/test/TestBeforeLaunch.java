@@ -75,4 +75,63 @@ public class TestBeforeLaunch {
         });
     }
 
+    public void test_custom_link() {
+        Task taskOne = new Task("задача 1", "описание задачи 1");
+        manager.createNewTasks(taskOne);
+        Task taskTwo = new Task("задача 2", "описание задачи 2");
+        manager.createNewTasks(taskTwo);
+
+        Epic epicWithSubTask = new Epic("Эпик 1", "описание для эпика 1");
+        manager.createEpic(epicWithSubTask);
+
+        Subtask subtaskOne = new Subtask("подзадача 1", "подзадача для эпика 1", epicWithSubTask.getId());
+        Subtask subtaskTwo = new Subtask("подзадача 2", "подзадача для эпика 1", epicWithSubTask.getId());
+        Subtask subtaskThree = new Subtask("подзадача 3", "подзадача для эпика 1", epicWithSubTask.getId());
+        manager.createNewSubTask(subtaskOne);
+        manager.createNewSubTask(subtaskTwo);
+        manager.createNewSubTask(subtaskThree);
+        manager.getSubTasksById(subtaskOne.getId());
+        manager.getSubTasksById(subtaskTwo.getId());
+        manager.getSubTasksById(subtaskThree.getId());
+        manager.getSubTasksById(subtaskThree.getId());
+        manager.getSubTasksById(subtaskThree.getId());
+
+        Epic epicWithoutSubTask = new Epic("Эпик 2", "описание для эпика 2");
+        manager.createEpic(epicWithoutSubTask);
+
+        manager.getTaskById(taskOne.getId());
+        manager.getTaskById(taskTwo.getId());
+        manager.getTaskById(taskOne.getId());
+        manager.getTaskById(taskOne.getId());
+
+
+        manager.getEpicById(epicWithSubTask.getId());
+        manager.getEpicById(epicWithoutSubTask.getId());
+
+        System.out.println("История просмотров до удаление задачи");
+        manager.getHistory().forEach(h -> {
+            System.out.println("ID: " + h.getId() + " | Название: " + h.getTitle() + " | Описание: " + h.getDescription());
+        });
+
+        manager.deleteTaskById(taskOne.getId());
+
+        System.out.println("История просмотров после удаление задачи");
+        manager.getHistory().forEach(h -> {
+            System.out.println("ID: " + h.getId() + " | Название: " + h.getTitle() + " | Описание: " + h.getDescription());
+        });
+
+        System.out.println("История просмотров до удаление эпика");
+        manager.getHistory().forEach(h -> {
+            System.out.println("ID: " + h.getId() + " | Название: " + h.getTitle() + " | Описание: " + h.getDescription());
+        });
+
+        manager.deleteEpicById(epicWithSubTask.getId());
+
+        System.out.println("История просмотров после удаление эпика");
+        manager.getHistory().forEach(h -> {
+            System.out.println("ID: " + h.getId() + " | Название: " + h.getTitle() + " | Описание: " + h.getDescription());
+        });
+
+    }
+
 }
