@@ -51,23 +51,15 @@ public class CustomLinkedList {
         if (node == head & node == tail) {
             tail = null;
             head = null;
-            node.setNext(null);
-            node.setPrev(null);
-        } else if (node == head) {
+        } else if (node.equals(head)) {
             head = node.getNext();
             node.getNext().setPrev(null);
-            node.setNext(null);
-            node.setNext(null);
-        } else if (node == tail) {
+        } else if (node.equals(tail)) {
             tail = node.getPrev();
             node.getPrev().setNext(null);
-            node.setPrev(null);
-            node.setNext(null);
         } else {
             node.getPrev().setNext(node.getNext());
             node.getNext().setPrev(node.getPrev());
-            node.setNext(null);
-            node.setPrev(null);
         }
 
         tasksMap.remove(node.getData().getId());
