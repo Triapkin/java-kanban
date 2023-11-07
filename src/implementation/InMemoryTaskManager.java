@@ -34,7 +34,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        tasks.clear();
+        if (tasks != null) {
+            tasks.values().forEach(t -> historyManager.remove(t.getId()));
+            tasks.clear();
+        }
     }
 
     @Override
@@ -75,8 +78,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() {
-        subtasks.clear();
-        epics.clear();
+        if (epics != null) {
+            deleteAllSubTasks();
+            epics.values().forEach(e -> historyManager.remove(e.getId()));
+            subtasks.clear();
+            epics.clear();
+        }
     }
 
     @Override
@@ -129,11 +136,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubTasks() {
-        subtasks.clear();
-        epics.values().forEach(e -> {
-            e.setStatus(Status.NEW);
-            e.setSubTasksId(new ArrayList<>());
-        });
+        if (subtasks != null) {
+            subtasks.values().forEach(s -> historyManager.remove(s.getId()));
+            subtasks.clear();
+            epics.values().forEach(e -> {
+                e.setStatus(Status.NEW);
+                e.setSubTasksId(new ArrayList<>());
+            });
+        }
+
     }
 
     @Override
