@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private Map<Integer, Task> tasks;
-    private Map<Integer, Subtask> subtasks;
-    private Map<Integer, Epic> epics;
-    private HistoryManager historyManager;
+    private final Map<Integer, Task> tasks;
+    private final Map<Integer, Subtask> subtasks;
+    private final Map<Integer, Epic> epics;
+    private final HistoryManager historyManager;
     private int taskId = 0;
 
     public InMemoryTaskManager() {
@@ -34,10 +34,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
-        if (tasks != null) {
-            tasks.values().forEach(t -> historyManager.remove(t.getId()));
-            tasks.clear();
-        }
+        tasks.values().forEach(t -> historyManager.remove(t.getId()));
+        tasks.clear();
     }
 
     @Override
@@ -78,12 +76,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() {
-        if (epics != null) {
-            deleteAllSubTasks();
-            epics.values().forEach(e -> historyManager.remove(e.getId()));
-            subtasks.clear();
-            epics.clear();
-        }
+        deleteAllSubTasks();
+        epics.values().forEach(e -> historyManager.remove(e.getId()));
+        epics.clear();
     }
 
     @Override
@@ -136,15 +131,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubTasks() {
-        if (subtasks != null) {
-            subtasks.values().forEach(s -> historyManager.remove(s.getId()));
-            subtasks.clear();
-            epics.values().forEach(e -> {
-                e.setStatus(Status.NEW);
-                e.setSubTasksId(new ArrayList<>());
-            });
-        }
-
+        subtasks.values().forEach(s -> historyManager.remove(s.getId()));
+        subtasks.clear();
+        epics.values().forEach(e -> {
+            e.setStatus(Status.NEW);
+            e.setSubTasksId(new ArrayList<>());
+        });
     }
 
     @Override
