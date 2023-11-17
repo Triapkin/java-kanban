@@ -1,17 +1,28 @@
 package models;
 
 import enums.Status;
+import enums.TaskType;
 
 public class Task {
     private int id;
     private String title;
     private String description;
     private Status status;
+    private TaskType taskType;
 
-    public Task(String title, String description) {
+    public Task(String title, String description, TaskType taskType) {
         this.title = title;
         this.description = description;
+        this.taskType = taskType;
         status = Status.NEW;
+    }
+
+    public Task(int id, String title, String description, Status status, TaskType taskType) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.taskType = taskType;
     }
 
     public int getId() {
@@ -44,5 +55,19 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public TaskType getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(TaskType taskType) {
+        this.taskType = taskType;
+    }
+
+    @Override
+    public String toString() {
+        String separator = ",";
+        return getId() + separator + getTaskType() + separator + getTitle() + separator + getStatus() + separator + getDescription();
     }
 }

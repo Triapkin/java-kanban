@@ -1,33 +1,39 @@
 package test;
 
 import enums.Status;
+import enums.TaskType;
+import implementation.FileBackedTasksManager;
 import interfaces.TaskManager;
 import manager.Managers;
 import models.Epic;
 import models.Subtask;
 import models.Task;
+import utils.CsvUtils;
+
+import java.io.File;
 
 public class TestBeforeLaunch {
 
     TaskManager manager = Managers.getDefault();
+    TaskManager fileManager = new FileBackedTasksManager();
 
     public void create_test() {
         System.out.println("Создаем 2 задачи");
-        Task taskOne = new Task("задача 1", "описание задачи 1");
-        Task taskTwo = new Task("задача 2", "описание задачи 2");
+        Task taskOne = new Task("задача 1", "описание задачи 1", TaskType.TASK);
+        Task taskTwo = new Task("задача 2", "описание задачи 2", TaskType.TASK);
         manager.createNewTasks(taskOne);
         manager.createNewTasks(taskTwo);
 
         System.out.println("Создаем 2 эпика");
-        Epic epicOne = new Epic("Эпик 1", "описание для эпика 1");
-        Epic epicTwo = new Epic("Эпик 2", "описание для эпика 2");
+        Epic epicOne = new Epic("Эпик 1", "описание для эпика 1", TaskType.EPIC);
+        Epic epicTwo = new Epic("Эпик 2", "описание для эпика 2", TaskType.EPIC);
         manager.createEpic(epicOne);
         manager.createEpic(epicTwo);
 
         System.out.println("Создаем 2 подзадачи на 1 эпик, и одну подзадачу на 2 эпик");
-        Subtask subtaskOne = new Subtask("подзадача 1", "подзадача для эпика 1", epicOne.getId());
-        Subtask subtaskTwo = new Subtask("подзадача 2", "подзадача для эпика 1", epicOne.getId());
-        Subtask subtaskThree = new Subtask("подзадача 1", "подзадача для эпика 2", epicTwo.getId());
+        Subtask subtaskOne = new Subtask("подзадача 1", "подзадача для эпика 1", epicOne.getId(), TaskType.SUBTASK);
+        Subtask subtaskTwo = new Subtask("подзадача 2", "подзадача для эпика 1", epicOne.getId(), TaskType.SUBTASK);
+        Subtask subtaskThree = new Subtask("подзадача 1", "подзадача для эпика 2", epicTwo.getId(), TaskType.SUBTASK);
         manager.createNewSubTask(subtaskOne);
         manager.createNewSubTask(subtaskTwo);
         manager.createNewSubTask(subtaskThree);
@@ -76,17 +82,17 @@ public class TestBeforeLaunch {
     }
 
     public void test_custom_link() {
-        Task taskOne = new Task("задача 1", "описание задачи 1");
+        Task taskOne = new Task("задача 1", "описание задачи 1", TaskType.TASK);
         manager.createNewTasks(taskOne);
-        Task taskTwo = new Task("задача 2", "описание задачи 2");
+        Task taskTwo = new Task("задача 2", "описание задачи 2", TaskType.TASK);
         manager.createNewTasks(taskTwo);
 
-        Epic epicWithSubTask = new Epic("Эпик 1", "описание для эпика 1");
+        Epic epicWithSubTask = new Epic("Эпик 1", "описание для эпика 1", TaskType.EPIC);
         manager.createEpic(epicWithSubTask);
 
-        Subtask subtaskOne = new Subtask("подзадача 1", "подзадача для эпика 1", epicWithSubTask.getId());
-        Subtask subtaskTwo = new Subtask("подзадача 2", "подзадача для эпика 1", epicWithSubTask.getId());
-        Subtask subtaskThree = new Subtask("подзадача 3", "подзадача для эпика 1", epicWithSubTask.getId());
+        Subtask subtaskOne = new Subtask("подзадача 1", "подзадача для эпика 1", epicWithSubTask.getId(), TaskType.SUBTASK);
+        Subtask subtaskTwo = new Subtask("подзадача 2", "подзадача для эпика 1", epicWithSubTask.getId(), TaskType.SUBTASK);
+        Subtask subtaskThree = new Subtask("подзадача 3", "подзадача для эпика 1", epicWithSubTask.getId(), TaskType.SUBTASK);
         manager.createNewSubTask(subtaskOne);
         manager.createNewSubTask(subtaskTwo);
         manager.createNewSubTask(subtaskThree);
@@ -96,7 +102,7 @@ public class TestBeforeLaunch {
         manager.getSubTasksById(subtaskThree.getId());
         manager.getSubTasksById(subtaskThree.getId());
 
-        Epic epicWithoutSubTask = new Epic("Эпик 2", "описание для эпика 2");
+        Epic epicWithoutSubTask = new Epic("Эпик 2", "описание для эпика 2", TaskType.EPIC);
         manager.createEpic(epicWithoutSubTask);
 
         manager.getTaskById(taskOne.getId());
@@ -131,7 +137,43 @@ public class TestBeforeLaunch {
         manager.getHistory().forEach(h -> {
             System.out.println("ID: " + h.getId() + " | Название: " + h.getTitle() + " | Описание: " + h.getDescription());
         });
+    }
 
+    public void test_file_utils() {
+        Task taskOne = new Task("задача 1", "описание задачи 1", TaskType.TASK);
+        Task taskTwo = new Task("задача 2", "описание задачи 2", TaskType.TASK);
+        Task taskThree = new Task("задача 3", "описание задачи 3", TaskType.TASK);
+        fileManager.createNewTasks(taskOne);
+        fileManager.createNewTasks(taskTwo);
+        fileManager.createNewTasks(taskThree);
+
+        Epic epicWithSubTask = new Epic("Эпик 1", "описание для эпика 1", TaskType.EPIC);
+        fileManager.createEpic(epicWithSubTask);
+
+        Subtask subtaskOne = new Subtask("подзадача 1", "подзадача для эпика 1", epicWithSubTask.getId(), TaskType.SUBTASK);
+        Subtask subtaskTwo = new Subtask("подзадача 2", "подзадача для эпика 1", epicWithSubTask.getId(), TaskType.SUBTASK);
+
+        fileManager.createNewSubTask(subtaskOne);
+        fileManager.createNewSubTask(subtaskTwo);
+
+        fileManager.getTaskById(taskTwo.getId());
+        fileManager.getTaskById(taskThree.getId());
+        fileManager.getEpicById(epicWithSubTask.getId());
+        fileManager.getSubTasksById(subtaskOne.getId());
+
+        Task taskTest = new Task("задача 4", "описание задачи 4", TaskType.TASK);
+        fileManager.createNewTasks(taskTest);
+        fileManager.getTaskById(taskTest.getId());
+    }
+
+    public void test_backup_app_after_close() {
+        File file = CsvUtils.createIfFileNotExist();
+        fileManager = FileBackedTasksManager.loadFromFile(file);
+
+        System.out.println("История после восстановления из файла");
+        fileManager.getHistory().forEach(h -> {
+            System.out.println("ID: " + h.getId() + " | Название: " + h.getTitle() + " | Описание: " + h.getDescription());
+        });
     }
 
 }
