@@ -1,5 +1,6 @@
 package implementation;
 
+import enums.TaskType;
 import exceptions.ManagerSaveException;
 import interfaces.HistoryManager;
 import models.Epic;
@@ -11,7 +12,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
@@ -49,11 +52,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw new ManagerSaveException("Не удалось сохранить");
         }
-    }
-
-    @Override
-    public List<Task> getAllTasks() {
-        return super.getAllTasks();
     }
 
     @Override
@@ -129,11 +127,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public List<Subtask> getAllSubTasks() {
-        return super.getAllSubTasks();
-    }
-
-    @Override
     public void deleteAllSubTasks() {
         super.deleteAllSubTasks();
         save();
@@ -158,23 +151,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-    @Override
-    public List<Subtask> getAllSubTasksByEpicId(int epicId) {
-        save();
-        return super.getAllSubTasksByEpicId(epicId);
-    }
-
-    @Override
-    public void updateEpicStatus(int epicId) {
-        super.updateEpicStatus(epicId);
-        save();
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return super.getHistory();
-    }
-
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
         List<String> lines = new ArrayList<>();
@@ -183,21 +159,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 lines.add(bufferedReader.readLine());
             }
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            throw new ManagerSaveException("Не удалось прочитать из файла.");
         }
+
+        int maxId = getMaxId(lines.subList(1, lines.size() - 2));
 
         for (int i = 1; i < lines.size() - 2; i++) {
             Task task = CsvUtils.fromString(lines.get(i));
             if (task != null) {
-                if (task.getClass().equals(Task.class)) {
+                if (task.getTaskType().equals(TaskType.TASK)) {
                     fileBackedTasksManager.createNewTasks(task);
-                } else if (task.getClass().equals(Epic.class)) {
+                } else if (task.getTaskType().equals(TaskType.EPIC)) {
                     fileBackedTasksManager.createEpic((Epic) task);
                 } else {
                     fileBackedTasksManager.createNewSubTask((Subtask) task);
                 }
             }
         }
+        fileBackedTasksManager.setTaskId(maxId++);
 
         List<Integer> ids = historyFromString(lines.get(lines.size() - 1));
         for (Integer id : ids) {
@@ -208,13 +187,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return fileBackedTasksManager;
     }
 
-    public static String historyToString(HistoryManager manager) {
+    private static String historyToString(HistoryManager manager) {
         List<Task> tasks = manager.getHistory();
         return tasks.stream().map(s -> String.valueOf(s.getId())).collect(Collectors.joining(","));
     }
 
-    public static List<Integer> historyFromString(String value) {
+    private static List<Integer> historyFromString(String value) {
         String[] lines = value.split(",");
         return Arrays.stream(lines).map(Integer::parseInt).collect(Collectors.toList());
+    }
+
+    private static int getMaxId(List<String> strings) {
+        return strings.stream().map(s -> s.split(",")).mapToInt(m -> Integer.parseInt(m[0])).max().orElseThrow(NoSuchElementException::new);
     }
 }

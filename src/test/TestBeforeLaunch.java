@@ -174,6 +174,9 @@ public class TestBeforeLaunch {
         fileManager.getHistory().forEach(h -> {
             System.out.println("ID: " + h.getId() + " | Название: " + h.getTitle() + " | Описание: " + h.getDescription());
         });
+
+        Task task = new Task("задача 1", "добавление задачи после восстановления", TaskType.TASK);
+        fileManager.createNewTasks(task);
     }
 
 }
