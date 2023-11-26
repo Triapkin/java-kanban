@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private final File defaultFile;
-    private final String newLine = "\n";
+    private final String newLine = System.lineSeparator();
 
     public FileBackedTasksManager() {
         this.defaultFile = CsvUtils.createIfFileNotExist();
@@ -75,6 +75,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public void updateTask(Task newTask) {
+        save();
         super.updateTask(newTask);
     }
 
@@ -82,11 +83,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void deleteTaskById(int id) {
         super.deleteTaskById(id);
         save();
-    }
-
-    @Override
-    public List<Epic> getALlEpics() {
-        return super.getALlEpics();
     }
 
     @Override
@@ -162,7 +158,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             throw new ManagerSaveException("Не удалось прочитать из файла.");
         }
 
-        int maxId = getMaxId(lines.subList(1, lines.size() - 2));
 
         for (int i = 1; i < lines.size() - 2; i++) {
             Task task = CsvUtils.fromString(lines.get(i));
@@ -176,13 +171,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
             }
         }
+
+        int maxId = getMaxId(lines.subList(1, lines.size() - 2));
         fileBackedTasksManager.setTaskId(maxId++);
 
         List<Integer> ids = historyFromString(lines.get(lines.size() - 1));
         for (Integer id : ids) {
-            fileBackedTasksManager.getTaskById(id);
-            fileBackedTasksManager.getEpicById(id);
-            fileBackedTasksManager.getSubTasksById(id);
+            fileBackedTasksManager.historyManager.add(fileBackedTasksManager.getTask(id));
         }
         return fileBackedTasksManager;
     }
@@ -199,5 +194,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private static int getMaxId(List<String> strings) {
         return strings.stream().map(s -> s.split(",")).mapToInt(m -> Integer.parseInt(m[0])).max().orElseThrow(NoSuchElementException::new);
+    }
+
+    private Task getTask(int id) {
+        if (tasks.get(id) != null) {
+            return tasks.get(id);
+        } else if (epics.get(id) != null) {
+            return epics.get(id);
+        }
+        return subtasks.get(id);
     }
 }
