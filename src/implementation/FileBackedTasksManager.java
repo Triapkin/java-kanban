@@ -75,8 +75,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public void updateTask(Task newTask) {
-        save();
         super.updateTask(newTask);
+        save();
     }
 
     @Override
@@ -162,9 +162,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         for (int i = 1; i < lines.size() - 2; i++) {
             Task task = CsvUtils.fromString(lines.get(i));
             if (task != null) {
-                if (task.getTaskType().equals(TaskType.TASK)) {
+                if (task.getTaskType() == TaskType.TASK) {
                     fileBackedTasksManager.createNewTasks(task);
-                } else if (task.getTaskType().equals(TaskType.EPIC)) {
+                } else if (task.getTaskType() == TaskType.EPIC) {
                     fileBackedTasksManager.createEpic((Epic) task);
                 } else {
                     fileBackedTasksManager.createNewSubTask((Subtask) task);
