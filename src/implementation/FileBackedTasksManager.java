@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
@@ -31,7 +30,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void save() {
         try (FileWriter fileWriter = new FileWriter(defaultFile)) {
-            fileWriter.write("id,type,name,status,description,epic\n");
+            fileWriter.write("id,type,name,status,description,startTime,endTime,duration,epic\n");
             for (Task task : getAllTasks()) {
                 fileWriter.write(task.toString());
                 fileWriter.write(newLine);
