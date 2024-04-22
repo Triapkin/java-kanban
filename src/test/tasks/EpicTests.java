@@ -14,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalDateTime;
 
 public class EpicTests {
-    TaskManager manager;
-    Epic epic = new Epic("epic_title", "epic_description", TaskType.EPIC);
-    Subtask subtask1 = new Subtask("subtask1_title", "subtask1_description", 1, TaskType.SUBTASK, 30, LocalDateTime.now());
-    Subtask subtask2 = new Subtask("subtask2_title", "subtask2_description", 1, TaskType.SUBTASK, 30, LocalDateTime.now());
+    private TaskManager manager;
+    private Epic epic = new Epic("epic_title", "epic_description", TaskType.EPIC);
+    private Subtask subtask1 = new Subtask("subtask1_title", "subtask1_description", 1, TaskType.SUBTASK, 30, LocalDateTime.now());
+    private Subtask subtask2 = new Subtask("subtask2_title", "subtask2_description", 1, TaskType.SUBTASK, 30, LocalDateTime.now().plusDays(1));
 
     @BeforeEach
     void setUp() {

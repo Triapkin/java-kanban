@@ -3,7 +3,6 @@ package test.managers;
 import enums.TaskType;
 import implementation.FileBackedTasksManager;
 import implementation.InMemoryTaskManager;
-import manager.Managers;
 import models.Epic;
 import models.Subtask;
 import models.Task;
@@ -18,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager> {
-    File file;
+    private File file;
 
     @BeforeEach
     public void setUp() {

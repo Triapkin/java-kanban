@@ -40,11 +40,10 @@ public class CsvUtils {
 
     public static File createIfFileNotExist() {
         File file = new File(DEFAULT_FILE_NAME);
+        file.getParentFile().mkdirs();
         try {
             if (file.createNewFile()) {
                 System.out.println("File created: " + file.getName());
-            } else {
-                System.out.println("File already exists.");
             }
         } catch (IOException ex) {
             throw new ManagerSaveException("Не удалось создать файл.");

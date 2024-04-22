@@ -3,7 +3,6 @@ package test.managers;
 import enums.Status;
 import enums.TaskType;
 import exceptions.CheckOverException;
-import implementation.InMemoryTaskManager;
 import interfaces.TaskManager;
 import models.Epic;
 import models.Subtask;
@@ -13,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -219,6 +220,12 @@ public class TaskManagerTest<T extends TaskManager> {
     @Test
     @DisplayName("Задачи в prioritizedTasks выстраиваются в правильном порядке")
     public void checkPrioritizedTask() {
+        manager.createNewTasks(new Task("Task", "task_description", TaskType.TASK, 60, LocalDateTime.now()));
+        manager.createNewTasks(new Task("Task", "task_description", TaskType.TASK, 60, LocalDateTime.now().plusDays(1)));
+        manager.createNewTasks(new Task("Task", "task_description", TaskType.TASK, 60, LocalDateTime.now().plusDays(2)));
+        TreeSet<Task> tasks = (TreeSet<Task>) manager.getPrioritizedTasks();
+        assertEquals(1, tasks.first().getId(), "первый элемент не стоит на своем месте");
+        assertEquals(3, tasks.last().getId(), "последний элемент не последний");
     }
 
     @Test
