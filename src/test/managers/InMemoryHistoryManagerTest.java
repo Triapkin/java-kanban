@@ -23,7 +23,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void addTasksToHistory() {
+    public void testAddShouldSuccessfullyAddTasksToHistory() {
         Task task1 = new Task(1, "Task", "task_description", Status.NEW, TaskType.TASK, 60, LocalDateTime.now());
         Task task2 = new Task(2, "Task2", "task_description2", Status.NEW, TaskType.TASK, 60, LocalDateTime.now().plusDays(1));
         Task task3 = new Task(3, "Task3", "task_description3", Status.NEW, TaskType.TASK, 60, LocalDateTime.now().plusDays(2));
@@ -34,7 +34,7 @@ public class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void removeFromHistory() {
+    public void testRemoveSuccessfullyRemoveTaskFromHistory() {
         Task task1 = new Task(1, "Task", "task_description", Status.NEW, TaskType.TASK, 60, LocalDateTime.now());
         Task task2 = new Task(2, "Task2", "task_description2", Status.NEW, TaskType.TASK, 60, LocalDateTime.now().plusDays(1));
         Task task3 = new Task(3, "Task3", "task_description3", Status.NEW, TaskType.TASK, 60, LocalDateTime.now().plusDays(2));
@@ -60,5 +60,4 @@ public class InMemoryHistoryManagerTest {
         manager.add(task1);
         assertEquals(List.of(task1), manager.getHistory(), "задача задублировалась");
     }
-
 }
