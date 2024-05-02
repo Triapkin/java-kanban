@@ -5,7 +5,6 @@ import enums.TaskType;
 import http.HttpTaskServer;
 import implementation.InMemoryTaskManager;
 import interfaces.TaskManager;
-import models.Epic;
 import models.Task;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static http.HttpTaskServer.getGson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static test.http.HttpTaskServerTests.createBaseGetRequest;
 
@@ -61,7 +59,7 @@ public class HistoryAndPrioritizedTests {
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Статус код не равен 201");
 
-        List<Task> tasks = getGson().fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
+        List<Task> tasks = server.getGson().fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
         }.getType());
 
         assertEquals(tasks.size(), manager.getHistory().size(), "вернулось больше задач в иcтории");
@@ -76,7 +74,7 @@ public class HistoryAndPrioritizedTests {
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Статус код не равен 201");
 
-        List<Task> tasks = getGson().fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
+        List<Task> tasks = server.getGson().fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
         }.getType());
 
         assertEquals(task, tasks.get(0), "первая таска не совпала в prioritized");

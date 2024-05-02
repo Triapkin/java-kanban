@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static http.HttpTaskServer.getGson;
 import static org.junit.jupiter.api.Assertions.*;
 import static test.http.HttpTaskServerTests.*;
 
@@ -63,7 +62,7 @@ public class TaskHandlerTests {
         Task updatedTask = new Task("new_title_check", "new_description", TaskType.TASK, 60, LocalDateTime.now());
         updatedTask.setId(task.getId());
 
-        HttpRequest httpRequest = createBasePostRequest(TASKS_URL, getGson().toJson(updatedTask));
+        HttpRequest httpRequest = createBasePostRequest(TASKS_URL, server.getGson().toJson(updatedTask));
 
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
@@ -79,7 +78,7 @@ public class TaskHandlerTests {
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Статус код не равен 201");
 
-        Task taskFromResponse = getGson().fromJson(response.body(), new TypeToken<Task>() {
+        Task taskFromResponse = server.getGson().fromJson(response.body(), new TypeToken<Task>() {
         }.getType());
         assertEquals(task.getId(), taskFromResponse.getId(), "Вернулся не тот айди запроса по id");
         assertEquals(task.getTitle(), taskFromResponse.getTitle(), "Вернулся непраивльный титл");
@@ -116,12 +115,12 @@ public class TaskHandlerTests {
         HttpRequest httpRequest = createBaseGetRequest(TASKS_URL);
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Статус код не равен 200");
-        List<Task> tasks = getGson().fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
+        List<Task> tasks = server.getGson().fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
         }.getType());
         assertEquals(3, tasks.size(), "Получилось больше трех задач");
     }
 
     private String createTaskAndConvertToJson() {
-        return getGson().toJson(new Task("title_check", "description", TaskType.TASK, 60, LocalDateTime.now()));
+        return server.getGson().toJson(new Task("title_check", "description", TaskType.TASK, 60, LocalDateTime.now()));
     }
 }

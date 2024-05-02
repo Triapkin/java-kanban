@@ -9,9 +9,9 @@ import models.Task;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import static http.HttpTaskServer.DEFAULT_CHARSET;
 
 public class BaseHttpHandler {
 
@@ -34,7 +34,7 @@ public class BaseHttpHandler {
     }
 
     public static <T extends Task> Optional<T> parseTask(Class<T> tClass, InputStream taskStream, Gson gson) throws IOException {
-        String body = new String(taskStream.readAllBytes(), DEFAULT_CHARSET);
+        String body = new String(taskStream.readAllBytes(), StandardCharsets.UTF_8);
         JsonElement jsonElement = JsonParser.parseString(body);
         if (jsonElement.isJsonObject()) {
             T task = gson.fromJson(body, tClass);

@@ -20,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HttpTaskServerTests {
 
     TaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer server = new HttpTaskServer(manager);
+    private HttpTaskServer server = new HttpTaskServer(manager);
 
     public HttpTaskServerTests() throws IOException {
     }
 
 
     @BeforeEach
-    public void setUpBeforeClass() throws Exception {
+    public void setUpBeforeClass() {
         server.start();
     }
 

@@ -16,7 +16,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-import static http.HttpTaskServer.getGson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static test.http.HttpTaskServerTests.createBaseGetRequest;
@@ -65,13 +64,13 @@ public class EpicHandlerTests {
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Статус код не равен 200");
 
-        Epic epicFromResponse = getGson().fromJson(response.body(), new TypeToken<Epic>() {
+        Epic epicFromResponse = server.getGson().fromJson(response.body(), new TypeToken<Epic>() {
         }.getType());
         assertEquals(epic.getId(), epicFromResponse.getId(), "Вернулся не тот айди запроса по id");
         assertEquals(epic.getTitle(), epicFromResponse.getTitle(), "Вернулся неправильный титл");
     }
 
     private String createEpicAndConvertToJson() {
-        return getGson().toJson(new Epic("title_epic", "title_description", TaskType.EPIC));
+        return server.getGson().toJson(new Epic("title_epic", "title_description", TaskType.EPIC));
     }
 }

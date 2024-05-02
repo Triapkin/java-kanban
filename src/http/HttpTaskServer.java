@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class HttpTaskServer {
 
     private static final int PORT = 8080;
-    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     private static HttpServer httpServer;
     private static TaskManager manager;
@@ -35,11 +35,11 @@ public class HttpTaskServer {
 
     public static void main(String[] args) throws IOException {
         manager = Managers.getDefault();
-        initialization();
-        start();
+        HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
+        server.start();
     }
 
-    public static void initialization() throws IOException {
+    public void initialization() throws IOException {
         gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .serializeNulls()
@@ -54,15 +54,15 @@ public class HttpTaskServer {
         httpServer.createContext("/prioritized", new PrioritizedHandler(manager, gson));
     }
 
-    public static void start() {
+    public void start() {
         httpServer.start();
     }
 
-    public static void stop() {
+    public void stop() {
         httpServer.stop(0);
     }
 
-    public static Gson getGson() {
+    public Gson getGson() {
         return gson;
     }
 

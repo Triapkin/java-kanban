@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static http.HttpTaskServer.getGson;
 import static org.junit.jupiter.api.Assertions.*;
 import static test.http.HttpTaskServerTests.*;
 
@@ -72,7 +71,7 @@ public class SubtaskHandlerTests {
         manager.createNewSubTask(subtask);
         Subtask updatedSubtask = new Subtask("title_sub_new", "description_sub_new", epic.getId(), TaskType.SUBTASK, 60, LocalDateTime.now().plusDays(2));
         updatedSubtask.setId(subtask.getId());
-        HttpRequest httpRequest = createBasePostRequest(SUBTASK_URL, getGson().toJson(updatedSubtask));
+        HttpRequest httpRequest = createBasePostRequest(SUBTASK_URL, server.getGson().toJson(updatedSubtask));
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         assertEquals(201, response.statusCode(), "Статус код не равен 201");
         assertEquals("Подздача с id: " + subtask.getId() + " обновлена", response.body(), "сообщение не сошлось");
@@ -87,7 +86,7 @@ public class SubtaskHandlerTests {
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Статус код не равен 201");
 
-        Task taskFromResponse = getGson().fromJson(response.body(), new TypeToken<Subtask>() {
+        Task taskFromResponse = server.getGson().fromJson(response.body(), new TypeToken<Subtask>() {
         }.getType());
         assertEquals(subtask.getId(), taskFromResponse.getId(), "Вернулся не тот айди запроса по id");
         assertEquals(subtask.getTitle(), taskFromResponse.getTitle(), "Вернулся непраивльный титл");
@@ -115,12 +114,12 @@ public class SubtaskHandlerTests {
         HttpRequest httpRequest = createBaseGetRequest(SUBTASK_URL);
         HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Статус код не равен 200");
-        List<Subtask> tasks = getGson().fromJson(response.body(), new TypeToken<ArrayList<Subtask>>() {
+        List<Subtask> tasks = server.getGson().fromJson(response.body(), new TypeToken<ArrayList<Subtask>>() {
         }.getType());
         assertEquals(3, tasks.size(), "Получилось больше трех задач");
     }
 
     private String createSubtaskAndConvertToJson() {
-        return getGson().toJson(new Subtask("subtask_title", "subtask_description", epic.getId(), TaskType.SUBTASK, 60, LocalDateTime.now()));
+        return server.getGson().toJson(new Subtask("subtask_title", "subtask_description", epic.getId(), TaskType.SUBTASK, 60, LocalDateTime.now()));
     }
 }
