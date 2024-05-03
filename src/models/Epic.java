@@ -40,4 +40,10 @@ public class Epic extends Task {
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
+
+    @Override
+    public String toString() {
+        String separator = ",";
+        return getId() + separator + getTaskType() + separator + getTitle() + separator + getStatus() + separator + getDescription() + separator + getStartTime();
+    }
 }
