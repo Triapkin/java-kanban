@@ -27,7 +27,7 @@ public class HistoryAndPrioritizedTests {
     private static final String HISTORY_URL = "http://localhost:8080/history/";
 
     static TaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer server = new HttpTaskServer(manager);
+    private HttpTaskServer server = new HttpTaskServer(manager);
     HttpClient httpClient = HttpClient.newHttpClient();
     static Task task, task2, task3;
 

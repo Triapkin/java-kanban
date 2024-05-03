@@ -29,8 +29,8 @@ public class SubtaskHandlerTests {
     private static final String SUBTASK_URL = "http://localhost:8080/subtasks/";
 
     static TaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer server = new HttpTaskServer(manager);
-    HttpClient httpClient = HttpClient.newHttpClient();
+    private HttpTaskServer server = new HttpTaskServer(manager);
+    private HttpClient httpClient = HttpClient.newHttpClient();
     static Epic epic = new Epic("epic_title", "epic_description", TaskType.EPIC);
 
 

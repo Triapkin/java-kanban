@@ -25,7 +25,7 @@ public class EpicHandlerTests {
 
     private static final String EPIC_URL = "http://localhost:8080/epics/";
 
-    TaskManager manager = new InMemoryTaskManager();
+    private TaskManager manager = new InMemoryTaskManager();
     HttpTaskServer server = new HttpTaskServer(manager);
     HttpClient httpClient = HttpClient.newHttpClient();
 

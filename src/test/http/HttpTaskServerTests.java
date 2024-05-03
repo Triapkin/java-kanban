@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HttpTaskServerTests {
 
-    TaskManager manager = new InMemoryTaskManager();
+    private TaskManager manager = new InMemoryTaskManager();
     private HttpTaskServer server = new HttpTaskServer(manager);
 
     public HttpTaskServerTests() throws IOException {

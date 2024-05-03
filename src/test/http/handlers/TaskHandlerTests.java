@@ -25,9 +25,9 @@ public class TaskHandlerTests {
 
     private static final String TASKS_URL = "http://localhost:8080/tasks/";
 
-    TaskManager manager = new InMemoryTaskManager();
-    HttpTaskServer server = new HttpTaskServer(manager);
-    HttpClient httpClient = HttpClient.newHttpClient();
+    private TaskManager manager = new InMemoryTaskManager();
+    private HttpTaskServer server = new HttpTaskServer(manager);
+    private HttpClient httpClient = HttpClient.newHttpClient();
 
     public TaskHandlerTests() throws IOException {
     }
